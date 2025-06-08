@@ -1,48 +1,41 @@
 ﻿using Confluent.Kafka;
-using System.Threading;
 using System;
+using System.Threading;
 
-class Consumer
+class Analytics
 {
     static void Main(string[] args)
     {
         var config = new ConsumerConfig
         {
-            // User-specific properties that you must set
             BootstrapServers = "pkc-619z3.us-east1.gcp.confluent.cloud:9092",
             SaslUsername = "EPQFY3IVDZJ27ZUH",
             SaslPassword = "V+CQyESrHfHaaoCcIlwiwTEnkmUDFt+5EzwfHwYsdb2HDNrm/O0h3Nlcl6E06GY3",
-
-            // Fixed properties
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslMechanism = SaslMechanism.Plain,
             GroupId = "Kafka",
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 
-        const string topic = "purchases";
-
-        CancellationTokenSource cts = new CancellationTokenSource();
-        Console.CancelKeyPress += (_, e) => {
-            e.Cancel = true; // prevent the process from terminating.
-            cts.Cancel();
-        };
-
         using (var consumer = new ConsumerBuilder<string, string>(config).Build())
         {
-            consumer.Subscribe(topic);
+            consumer.Subscribe(new[] { "Analytics" });
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Console.CancelKeyPress += (_, e) => {
+                e.Cancel = true;
+                cts.Cancel();
+            };
+
             try
             {
                 while (true)
                 {
                     var cr = consumer.Consume(cts.Token);
-                    Console.WriteLine($"Consumed event from topic {topic}: key = {cr.Message.Key,-10} value = {cr.Message.Value}");
+                    Console.WriteLine($"[{cr.Topic}] Key: {cr.Message.Key}, Value: {cr.Message.Value}");
                 }
             }
-            catch (OperationCanceledException)
-            {
-                // Ctrl-C was pressed.
-            }
+            catch (OperationCanceledException) { }
             finally
             {
                 consumer.Close();
