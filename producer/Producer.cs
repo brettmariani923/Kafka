@@ -5,6 +5,8 @@ class Producer
 {
     static void Main(string[] args)
     {
+        //Adjust the startup object in the csproj file depending on what you want to run.
+
         const string topic = "purchases";
 
         string[] users = { "eabara", "jsmith", "sgarcia", "jbernard", "htanaka", "awalther" };

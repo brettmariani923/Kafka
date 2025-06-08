@@ -6,6 +6,8 @@ class Consumer
 {
     static void Main(string[] args)
     {
+        //Adjust the startup object in the csproj file depending on what you want to run.
+
         var config = new ConsumerConfig
         {
             // User-specific properties that you must set

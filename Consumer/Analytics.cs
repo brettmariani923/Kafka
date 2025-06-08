@@ -4,6 +4,7 @@ using System.Threading;
 
 class Analytics
 {
+    //Adjust the startup object in the csproj file depending on what you want to run.
     static void Main(string[] args)
     {
         var config = new ConsumerConfig

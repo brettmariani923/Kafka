@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 class AnalyticsProducer
 {
+    //Adjust the startup object in the csproj file depending on what you want to run.
+
     static async Task Main(string[] args)
     {
         var config = new ProducerConfig
@@ -20,7 +22,7 @@ class AnalyticsProducer
             try
             {
                 var key0 = "key-part-0";
-                var value0 = $"Franz Kafka at {DateTime.UtcNow}";
+                var value0 = $"Exodia! OBLITERATE!!! at {DateTime.UtcNow}";
                 var result0 = await producer.ProduceAsync(
                     new TopicPartition("Analytics", 0),
                     new Message<string, string> { Key = key0, Value = value0 }
@@ -28,7 +30,7 @@ class AnalyticsProducer
                 Console.WriteLine($"Produced to {result0.TopicPartitionOffset}: {key0} => {value0}");
 
                 var key1 = "key-part-1";
-                var value1 = $"was a bug person at {DateTime.UtcNow}";
+                var value1 = $"Message to partition 1 at {DateTime.UtcNow}";
                 var result1 = await producer.ProduceAsync(
                     new TopicPartition("Analytics", 1),
                     new Message<string, string> { Key = key1, Value = value1 }
