@@ -22,7 +22,7 @@ class AnalyticsProducer
             try
             {
                 var key0 = "key-part-0";
-                var value0 = $"Exodia! OBLITERATE!!! at {DateTime.UtcNow}";
+                var value0 = $"Message to partition 0 at {DateTime.UtcNow}";
                 var result0 = await producer.ProduceAsync(
                     new TopicPartition("Analytics", 0),
                     new Message<string, string> { Key = key0, Value = value0 }
