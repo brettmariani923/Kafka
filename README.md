@@ -70,6 +70,7 @@ File: AnalyticsConsumer.cs
           - book: 2
 
 ✅ Purpose: Real-time tracking of user behavior and product demand.
+
 🧩 Core Components & Responsibilities
 File/Class	Responsibility
 PurchaseEvent.cs	Defines the structure of a purchase message.
@@ -79,6 +80,7 @@ KafkaProducerService.cs	Handles how messages are sent to Kafka.
 PurchaseProcessor.cs	Validates raw purchase events and forwards clean data.
 Validator.cs	Tries to parse and validate each JSON message.
 AnalyticsConsumer.cs	Reads clean data and logs aggregate stats.
+
 🧭 End-to-End Data Flow (Simplified)
 ```
 [ProducerProgram] ──> "purchases" topic ──┬──> [PurchaseProcessor]
