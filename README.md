@@ -20,7 +20,7 @@ KafkaPipeline/
 │   └── AnalyticsConsumer.cs  # Consumes valid events and generates analytics
 ```
 
-🛠 Technologies Used
+Technologies Used
 
     .NET 8
 
@@ -32,12 +32,10 @@ KafkaPipeline/
 
 ## 🔄 Data Flow Overview
 
-ProducerApp --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kafka Topic: Analytics --> AnalyticsConsumer
+ProducerProgram --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kafka Topic: Analytics --> AnalyticsConsumer
 
 
-
-
-📤 Producer Logic
+Producer Logic
 
 📄 ProducerProgram.cs
 
@@ -59,7 +57,7 @@ ProducerApp --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kaf
 
         Flushes Kafka buffers after message production.
 
-✅ Validation Pipeline
+Validation Pipeline
 
 📄 PurchaseProcessor.cs
 
@@ -79,7 +77,7 @@ ProducerApp --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kaf
 
         UserId and Item are present.
 
-📊 Analytics Aggregation
+Analytics Aggregation
 
 📄 AnalyticsConsumer.cs
 
@@ -93,7 +91,7 @@ ProducerApp --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kaf
 
     Logs analytics snapshot every few messages.
 
-🧪 Sample Output
+Sample Output
 
 🔍 Listening to topic: purchases
 📥 Received message: {"UserId":"jsmith","Item":"book","Timestamp":"..."}
