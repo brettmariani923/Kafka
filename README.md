@@ -11,7 +11,7 @@ It showcases:
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```bash
 .
@@ -25,7 +25,7 @@ It showcases:
 │   ├── Validator.cs       # Validates and forwards messages
 │   └── Analytics.cs       # Performs in-memory analytics
 
-🧠 How It Works – Step-by-Step
+How It Works 
 🟢 1. Producer.cs — Simulates Purchases
 
     Randomly generates users and items.
@@ -36,7 +36,7 @@ It showcases:
 
     Sends the event to Kafka topic: purchases.
 
-🛠️ Key Technologies:
+Key Technologies:
 ProducerBuilder, JsonSerializer, KafkaTopics.Purchases
 🟡 2. Validator.cs — Cleans the Data
 
@@ -50,7 +50,7 @@ ProducerBuilder, JsonSerializer, KafkaTopics.Purchases
 
     Forwards only valid messages to processed-purchases topic.
 
-🛠️ Key Technologies:
+Key Technologies:
 ConsumerBuilder, ProduceAsync, JsonSerializer, error handling
 🔵 3. Analytics.cs — Real-Time Insights
 
@@ -64,9 +64,9 @@ ConsumerBuilder, ProduceAsync, JsonSerializer, error handling
 
     Prints a simple snapshot every 5 messages.
 
-🛠️ Key Technologies:
+Key Technologies:
 Dictionary<string, int>, live counters, analytics snapshot display
-🚀 Topics Used
+Topics Used
 Kafka Topic	Purpose
 purchases	Raw user purchase events
 processed-purchases	Validated purchase events
