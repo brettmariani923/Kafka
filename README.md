@@ -1,142 +1,87 @@
-🧾 Kafka Purchase Event Pipeline
+✅ Step-by-Step Flow
+1. Message Creation
 
-This project simulates a full Kafka event-driven pipeline using .NET 8. It showcases real-time data streaming with message validation, multi-topic routing, and analytics aggregation.
+File: ProducerProgram.cs
 
+    A list of random users and items is defined.
 
-📦 Project Structure
+    A loop generates fake PurchaseEvent objects:
+
+    new PurchaseEvent { UserId = "eabara", Item = "book", Timestamp = DateTime.UtcNow }
+
+    These messages simulate actual purchases.
+
+2. Sending Messages to Kafka
+
+File: KafkaProducerService.cs
+
+    The PurchaseEvent is serialized to JSON and sent to the Kafka topic "purchases":
+
+    await _producer.ProduceAsync(KafkaTopics.Purchases, message);
+
+🔁 Extra logic: Also sends string summaries to "Analytics" partitions 0 and 1 — useful for load balancing or advanced analytics.
+3. Consuming + Validating Purchases
+
+File: PurchaseProcessor.cs
+
+    Subscribes to the "purchases" topic.
+
+    For each message:
+
+        Deserializes it from JSON.
+
+        Uses Validator.cs to ensure:
+
+            The message is valid JSON.
+
+            It contains a non-empty UserId and Item.
+
+        If valid, it’s forwarded to the "Analytics" topic:
+
+        await producer.ProduceAsync(KafkaTopics.Analytics, validMessage);
+
+        If invalid, it’s skipped and logged.
+
+✅ Purpose: This stage ensures only clean, meaningful data reaches the analytics system.
+4. Analyzing Clean Data
+
+File: AnalyticsConsumer.cs
+
+    Subscribes to the "Analytics" topic.
+
+    For each valid message:
+
+        Deserializes it to a PurchaseEvent.
+
+        Updates:
+
+            userPurchaseCount → how many times each user purchased.
+
+            itemCount → how often each item was bought.
+
+        Logs each purchase.
+
+        Every 5th purchase (based on a formula), prints a full snapshot:
+
+        👥 Purchases per user:
+          - eabara: 2
+        📦 Items purchased:
+          - book: 2
+
+✅ Purpose: Real-time tracking of user behavior and product demand.
+🧩 Core Components & Responsibilities
+File/Class	Responsibility
+PurchaseEvent.cs	Defines the structure of a purchase message.
+KafkaTopics.cs	Centralized names for Kafka topics.
+ProducerProgram.cs	Entry point for simulating and sending fake purchases.
+KafkaProducerService.cs	Handles how messages are sent to Kafka.
+PurchaseProcessor.cs	Validates raw purchase events and forwards clean data.
+Validator.cs	Tries to parse and validate each JSON message.
+AnalyticsConsumer.cs	Reads clean data and logs aggregate stats.
+🧭 End-to-End Data Flow (Simplified)
 ```
-KafkaPipeline/
-│
-├── Common/              # Shared models and constants
-│   ├── Models/
-│   │   └── PurchaseEvent.cs
-│   └── KafkaTopics.cs
-│
-├── Producer/            # Publishes purchase events to Kafka
-│   ├── KafkaProducerService.cs
-│   └── ProducerProgram.cs
-│
-├── Consumer/            # Consumes, validates, and analyzes events
-│   ├── Validator.cs           # Validates raw messages
-│   ├── PurchaseProcessor.cs  # Validates and forwards to Analytics
-│   └── AnalyticsConsumer.cs  # Consumes valid events and generates analytics
+[ProducerProgram] ──> "purchases" topic ──┬──> [PurchaseProcessor]
+                                         │       └── valid messages ──> "Analytics" topic ──> [AnalyticsConsumer]
+                                         │
+                                         └── invalid messages ──> skipped/logged
 ```
-
-Technologies Used
-
-    .NET 8
-
-    Confluent Kafka .NET Client
-
-    Kafka (Cloud-hosted via Confluent Cloud)
-
-    JSON serialization via System.Text.Json
-
-## 🔄 Data Flow Overview
-
-ProducerProgram --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kafka Topic: Analytics --> AnalyticsConsumer
-
-
-Producer Logic
-
-📄 ProducerProgram.cs
-
-    Simulates purchases from random users and items.
-
-    Sends:
-
-        Raw purchase data to purchases topic.
-
-        Formatted analytics messages to specific partitions of the Analytics topic.
-
-🧱 KafkaProducerService.cs
-
-    Encapsulates Kafka producing logic:
-
-        Sends raw purchase messages.
-
-        Sends to specific topic partitions.
-
-        Flushes Kafka buffers after message production.
-
-Validation Pipeline
-
-📄 PurchaseProcessor.cs
-
-    Subscribes to the purchases topic.
-
-    Validates messages using Validator.cs.
-
-    Forwards valid purchases to the Analytics topic.
-
-📄 Validator.cs
-
-    Deserializes JSON.
-
-    Checks:
-
-        JSON format is correct.
-
-        UserId and Item are present.
-
-Analytics Aggregation
-
-📄 AnalyticsConsumer.cs
-
-    Subscribes to the Analytics topic.
-
-    Deserializes and tracks:
-
-        Purchase counts per user.
-
-        Item popularity.
-
-    Logs analytics snapshot every few messages.
-
-Sample Output
-
-🔍 Listening to topic: purchases
-📥 Received message: {"UserId":"jsmith","Item":"book","Timestamp":"..."}
-✅ Valid purchase forwarded to Analytics: jsmith bought book
-
-📊 Listening to topic: Analytics
-🧾 jsmith bought book
-
-📈 Current Analytics Snapshot:
-👥 Purchases per user:
-  - jsmith: 3
-📦 Items purchased:
-  - book: 2
-  - gift card: 1
-
-📚 Learning Objectives
-
-✅ How to:
-
-    Use Kafka producers/consumers in .NET.
-
-    Route messages between Kafka topics.
-
-    Validate and deserialize JSON messages.
-
-    Design reusable Kafka services.
-
-    Build end-to-end data pipelines with clean architecture.
-
-🧠 Concepts Demonstrated
-
-    Clean Separation of Concerns
-
-        Producer = what and when to send
-
-        Processor = whether it should be sent
-
-        Consumer = what to do with messages
-
-    Stream Processing Pipeline
-
-        Raw ➜ Validated ➜ Aggregated
-
-    Partitioned Topics
-
-        Simulates load-balancing or message routing by partition
