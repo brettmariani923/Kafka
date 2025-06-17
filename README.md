@@ -33,18 +33,23 @@ KafkaPipeline/
 ## 🔄 Data Flow Overview
 
 ProducerApp
+
    |
    v
 Kafka Topic: purchases
+
    |
    v
 PurchaseProcessor (Validator)
+
    |
    v
 Kafka Topic: Analytics
+
    |
    v
 AnalyticsConsumer
+
 
 
 
