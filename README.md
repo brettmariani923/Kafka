@@ -20,6 +20,7 @@ File: KafkaProducerService.cs
     await _producer.ProduceAsync(KafkaTopics.Purchases, message);
 
 🔁 Extra logic: Also sends string summaries to "Analytics" partitions 0 and 1 — useful for load balancing or advanced analytics.
+
 3. Consuming + Validating Purchases
 
 File: PurchaseProcessor.cs
