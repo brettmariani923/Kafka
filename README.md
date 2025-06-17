@@ -30,16 +30,22 @@ KafkaPipeline/
 
     JSON serialization via System.Text.Json
 
-🔁 Data Flow Overview
+## 🔄 Data Flow Overview
 
-flowchart TD
-    A[Producer] -->|raw events| B[purchases topic]
-    B -->|consumed| C[PurchaseProcessor]
-    C -->|validates JSON & required fields| D{Valid?}
-    D -->|❌ No| E[Skip]
-    D -->|✅ Yes| F[Analytics topic]
-    F -->|consumed| G[AnalyticsConsumer]
-    G -->|Aggregates & Logs| H[Console Analytics Output]
+ProducerApp
+   |
+   v
+Kafka Topic: purchases
+   |
+   v
+PurchaseProcessor (Validator)
+   |
+   v
+Kafka Topic: Analytics
+   |
+   v
+AnalyticsConsumer
+
 
 
 📤 Producer Logic
