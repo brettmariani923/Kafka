@@ -1,6 +1,6 @@
 🧠 Goal of the Project
 
-You're simulating a real-world event streaming system with Kafka using C#. The idea is:
+Simulating a real-world event streaming system with Kafka using C#. The idea is:
 
     A Producer sends data (e.g., purchases).
 
@@ -9,7 +9,7 @@ You're simulating a real-world event streaming system with Kafka using C#. The i
     An Analytics service consumes validated data and analyzes it.
 
 This mimics modern microservice event pipelines used in e-commerce, IoT, logging systems, etc.
-📁 Your Project Structure (Organized)
+📁 Project Structure (Organized)
 
 /Producer/Producer.cs            🟢 Sends purchase events (JSON)
 /Consumer/Validator.cs          🟡 Validates messages (soon)
@@ -95,7 +95,7 @@ Later, this service will:
 
     Print results to console or save them
 
-🧩 What You've Built So Far (Summary)
+🧩 Built So Far (Summary)
 Component	Role	Kafka Topic	Built? ✅
 Producer	Sends random purchases	purchases	✅
 Common	Shared models + topics	—	✅
