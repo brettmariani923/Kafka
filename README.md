@@ -19,6 +19,7 @@ KafkaPipeline/
 │   ├── PurchaseProcessor.cs  # Validates and forwards to Analytics
 │   └── AnalyticsConsumer.cs  # Consumes valid events and generates analytics
 
+
 🛠 Technologies Used
 
     .NET 8
@@ -39,6 +40,7 @@ flowchart TD
     D -->|✅ Yes| F[Analytics topic]
     F -->|consumed| G[AnalyticsConsumer]
     G -->|Aggregates & Logs| H[Console Analytics Output]
+
 
 📤 Producer Logic
 
