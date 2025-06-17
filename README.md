@@ -81,6 +81,7 @@ PurchaseProcessor.cs	Validates raw purchase events and forwards clean data.
 Validator.cs	Tries to parse and validate each JSON message.
 AnalyticsConsumer.cs	Reads clean data and logs aggregate stats.
 
+
 🧭 End-to-End Data Flow (Simplified)
 ```
 [ProducerProgram] ──> "purchases" topic ──┬──> [PurchaseProcessor]
