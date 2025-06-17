@@ -1,6 +1,8 @@
 🧾 Kafka Purchase Event Pipeline
 
 This project simulates a full Kafka event-driven pipeline using .NET 8. It showcases real-time data streaming with message validation, multi-topic routing, and analytics aggregation.
+
+
 📦 Project Structure
 ```
 KafkaPipeline/
