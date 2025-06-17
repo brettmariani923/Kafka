@@ -1,103 +1,73 @@
-🧠 Goal of the Project
+# 🛠️ Event-Driven Kafka Pipeline (C# + Confluent Kafka)
 
-Simulating a real-world event streaming system with Kafka using C#. The idea is:
+This project demonstrates a complete **Kafka event streaming pipeline** built with `.NET 8`, using **producers**, **validators**, and **analytics consumers** to simulate real-time purchase events and track analytics.
 
-    A Producer sends data (e.g., purchases).
+It showcases:
+- ✅ Event modeling with `PurchaseEvent`
+- ✅ Real-time validation and message filtering
+- ✅ Asynchronous Kafka production and consumption
+- ✅ In-memory analytics on streaming data
+- ✅ Clean separation of concerns across 3 projects
 
-    A Validator ensures data is well-formed and routes it forward.
+---
 
-    An Analytics service consumes validated data and analyzes it.
+## 📦 Project Structure
 
-This mimics modern microservice event pipelines used in e-commerce, IoT, logging systems, etc.
-📁 Project Structure (Organized)
+```bash
+.
+├── Common/                 # Shared models and topic names
+│   ├── Models/PurchaseEvent.cs
+│   └── KafkaTopics.cs
+├── Producer/              # Sends random purchase events to Kafka
+│   ├── producer.cs
+│   └── analyticsproducer.cs (demo only)
+├── Consumer/              # Two consumers:
+│   ├── Validator.cs       # Validates and forwards messages
+│   └── Analytics.cs       # Performs in-memory analytics
 
-/Producer/Producer.cs            🟢 Sends purchase events (JSON)
-/Consumer/Validator.cs          🟡 Validates messages (soon)
-/Consumer/Analytics.cs          🔵 Analyzes processed events
+🧠 How It Works – Step-by-Step
+🟢 1. Producer.cs — Simulates Purchases
 
-/Common/KafkaTopics.cs          📌 Shared topic names
-/Common/Models/PurchaseEvent.cs📌 Shared data model
+    Randomly generates users and items.
 
-✅ STEP-BY-STEP BREAKDOWN
-1. Producer.cs (in /Producer)
+    Creates a PurchaseEvent object.
 
-Purpose: Sends randomized purchase events to Kafka topic purchases.
-How it works:
+    Serializes to JSON.
 
-    Randomly picks a user and item.
+    Sends the event to Kafka topic: purchases.
 
-    Builds a PurchaseEvent object.
+🛠️ Key Technologies:
+ProducerBuilder, JsonSerializer, KafkaTopics.Purchases
+🟡 2. Validator.cs — Cleans the Data
 
-    Serializes it to JSON using System.Text.Json.
+    Subscribed to the purchases topic.
 
-    Sends the JSON string to the purchases topic in Kafka.
+    Validates each message:
 
-Example Message Sent:
+        Must contain UserId and Item.
 
-{
-  "UserId": "sgarcia",
-  "Item": "t-shirts",
-  "Timestamp": "2025-06-17T22:30:15Z"
-}
+        Must be valid JSON.
 
-Key concepts:
+    Forwards only valid messages to processed-purchases topic.
 
-    Uses Confluent.Kafka for Kafka client.
+🛠️ Key Technologies:
+ConsumerBuilder, ProduceAsync, JsonSerializer, error handling
+🔵 3. Analytics.cs — Real-Time Insights
 
-    Topic name is managed via KafkaTopics.Purchases.
+    Subscribed to processed-purchases.
 
-    Message key is the UserId, value is the JSON.
+    Deserializes events and updates:
 
-2. Common Project (in /Common)
+        📊 Purchase count per user
 
-Used to share constants and models across all services.
-🔸 KafkaTopics.cs
+        📦 Total count of items sold
 
-A static class that holds the topic names:
+    Prints a simple snapshot every 5 messages.
 
-public const string Purchases = "purchases";
-public const string ProcessedPurchases = "processed-purchases";
-public const string Analytics = "analytics";
-
-Why? Centralizes configuration to avoid typos and hardcoding.
-🔸 PurchaseEvent.cs
-
-A shared data class:
-
-public class PurchaseEvent
-{
-    public string UserId { get; set; }
-    public string Item { get; set; }
-    public DateTime Timestamp { get; set; }
-}
-
-Why? You’ll deserialize this in the validator and analytics services. Keeps type-safety and structure.
-3. What’s Next: Validator (Validator.cs)
-
-We'll build this next. It will:
-
-    Consume from purchases topic.
-
-    Deserialize JSON into PurchaseEvent.
-
-    Check if data is valid (e.g. no nulls).
-
-    Forward valid events to processed-purchases topic.
-
-This step simulates a service that cleans or filters data — common in real-world pipelines.
-4. Analytics (Analytics.cs)
-
-Later, this service will:
-
-    Read from processed-purchases
-
-    Group or summarize data (e.g., top items, counts)
-
-    Print results to console or save them
-
-🧩 Built So Far (Summary)
-Component	Role	Kafka Topic	Built? ✅
-Producer	Sends random purchases	purchases	✅
-Common	Shared models + topics	—	✅
-Validator	Validates and re-publishes	processed-purchases	🛠️ Next
-Analytics	Processes/aggregates data	processed-purchases
+🛠️ Key Technologies:
+Dictionary<string, int>, live counters, analytics snapshot display
+🚀 Topics Used
+Kafka Topic	Purpose
+purchases	Raw user purchase events
+processed-purchases	Validated purchase events
+analytics	(Optional) direct messages for demo
