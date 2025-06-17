@@ -3,12 +3,16 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
-		<StartupObject>AnalyticsProducer</StartupObject>
+		<StartupObject>ProducerProgram</StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Confluent.Kafka" Version="2.10.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common\Common.csproj" />
 	</ItemGroup>
 
 </Project>
