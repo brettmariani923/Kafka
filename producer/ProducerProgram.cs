@@ -2,6 +2,7 @@
 using Confluent.Kafka;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Threading.Tasks;
 using static Confluent.Kafka.ConfigPropertyNames;
 
@@ -19,8 +20,13 @@ class ProducerProgram
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslMechanism = SaslMechanism.Plain
         };
+        //configuration details ofr connecting to my kafka cluster.
+        //bootstrap servers: kafka broker address.
+        // SASL username/password: confluent cloud api and secret for authentication.
+        // saslssl and plain: security protocol and mechanism for authentication.
 
         var producer = new KafkaProducerService(config);
+        //connection to KafkaProducerService.cs methods that handle sending messages to Kafka topics.
         var random = new Random();
 
         string[] users = { "eabara", "jsmith", "sgarcia", "jbernard", "htanaka" };
@@ -37,6 +43,7 @@ class ProducerProgram
                 Item = item,
                 Timestamp = DateTime.UtcNow
             };
+            //picks a random user and item from the arrays, creates a PurchaseEvent object with the current timestamp.
 
             // 1. Send to purchases topic (auto-partitioned)
             await producer.ProducePurchaseAsync(purchase);
@@ -49,23 +56,25 @@ class ProducerProgram
         }
 
         producer.Flush();
-    }
+    }//makes sure any buffered messages are sent before the program exits.
 }
-//creates the producer, creates events, and calls the methods on MultiTopicProducer to actually send those events.
+// creates the producer, creates events, and calls the methods on KafkaProducerService to actually send those events.
+
 /*     This class contains the Main method — the program’s starting point.
 
-    It creates an instance of MultiTopicProducer with the Kafka config.
+    It creates an instance of KafkaProducerService with the Kafka config.
 
     It creates messages (PurchaseEvent objects), decides which users/items to use, and when/how many messages to send.
 
-    It calls methods on MultiTopicProducer to actually send those messages.
+    It calls methods on KafkaProducerService to actually send those messages.
 
     It controls the flow and timing of the message sending (like a manager telling the delivery service what to deliver and when).
 
 Think of it like the manager that prepares all the parcels and tells the delivery service when and where to send them.
 */
-//handles business logic: creating meaningful messages, looping, generating data, and deciding what to send.
+// handles business logic: creating meaningful messages, looping, generating data, and deciding what to send.
 // Deals with "What" messages to send and when to send them.
+
 
 /*[Producer App]
      |

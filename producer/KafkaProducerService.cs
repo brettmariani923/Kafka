@@ -14,7 +14,8 @@ public class KafkaProducerService
     {
         _producer = new ProducerBuilder<string, string>(config).Build();
     }
-
+    //ProducerConfig defines connection to Kafka, how to serialize messages, and how to send them.
+    //setting up dependency injection for the producer so it can be reused
     public async Task ProducePurchaseAsync(PurchaseEvent e)
     {
         var json = JsonSerializer.Serialize(e);
@@ -22,14 +23,8 @@ public class KafkaProducerService
             KafkaTopics.Purchases,
             new Message<string, string> { Key = e.UserId, Value = json });
     }
-
-    /*public async Task ProduceAlertAsync(string key, string message)
-    {
-        await _producer.ProduceAsync(
-            KafkaTopics.Alerts,
-            new Message<string, string> { Key = key, Value = message });
-    }
-    */
+    //sends purchase events to the "purchases" topic in Kafka.
+    //json serializer converts PurchaseEvent objects to JSON strings.
 
     public async Task ProduceToAnalyticsPartitionAsync(string key, string message, int partition)
     {
@@ -37,9 +32,19 @@ public class KafkaProducerService
             new TopicPartition(KafkaTopics.Analytics, new Partition(partition)),
             new Message<string, string> { Key = key, Value = message });
     }
+    //sends purchase events to the "Analytics" topic, specifically to a given partition.
 
     public void Flush() => _producer.Flush(TimeSpan.FromSeconds(5));
 }
+
+
+/*public async Task ProduceAlertAsync(string key, string message)
+{
+    await _producer.ProduceAsync(
+        KafkaTopics.Alerts,
+        new Message<string, string> { Key = key, Value = message });
+}
+*/
 
 // helper class that encapsulates Kafka producing logic (sending messages to different topics/partitions).
 

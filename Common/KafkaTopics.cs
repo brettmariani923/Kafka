@@ -9,6 +9,6 @@ namespace Common;
 public static class KafkaTopics
 {
     public const string Purchases = "purchases";
-    public const string Analytics = "Analytics";  // Make sure this matches your Kafka topic name (case-sensitive)
+    public const string Analytics = "Analytics";  
 }
 

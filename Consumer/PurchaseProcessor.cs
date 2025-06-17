@@ -18,6 +18,7 @@ class PurchaseProcessor
             GroupId = "purchase-validator",
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
+        //tells which broker to connect to, how to authenticate, and which group this consumer belongs to, and to read from the beginning of the topic if no offsets are stored.
 
         var producerConfig = new ProducerConfig
         {
@@ -28,9 +29,12 @@ class PurchaseProcessor
             SaslMechanism = consumerConfig.SaslMechanism,
             Acks = Acks.All
         };
+        //This mirrors the consumer settings and ensures messages are reliably acknowledged (Acks.All)
 
         using var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
+        //reads messages from the "purchases" topic, deserializes them, and validates their structure.
         using var producer = new ProducerBuilder<string, string>(producerConfig).Build();
+        //writes messages to the "Analytics" topic, specifically to partition 0 and 1.
 
         var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, e) =>
@@ -38,6 +42,7 @@ class PurchaseProcessor
             e.Cancel = true;
             cts.Cancel();
         };
+        //allows graceful shutdown when Ctrl+C is pressed.
 
         consumer.Subscribe(KafkaTopics.Purchases);
         Console.WriteLine($"🔍 Listening to topic: {KafkaTopics.Purchases}");
@@ -58,12 +63,15 @@ class PurchaseProcessor
                         Console.WriteLine($"❌ Invalid purchase message: {cr.Message.Value}");
                         continue;
                     }
+                    //uses the Validator class to check if the message is well-formed JSON and contains the required fields.
+                    //invalid messages are skipped and logged.
 
                     await producer.ProduceAsync(KafkaTopics.Analytics, new Message<string, string>
                     {
                         Key = evt.UserId,
                         Value = cr.Message.Value
                     });
+                    //Sends the valid message to the analytics topic, using the same message value and UserId as the key.
 
                     Console.WriteLine($"✅ Valid purchase forwarded to {KafkaTopics.Analytics}: {evt.UserId} bought {evt.Item}");
                 }
@@ -71,6 +79,7 @@ class PurchaseProcessor
                 {
                     Console.WriteLine($"💥 Kafka error: {ex.Error.Reason}");
                 }
+                //catches any errors without crashing
             }
         }
         catch (OperationCanceledException)
@@ -86,3 +95,6 @@ class PurchaseProcessor
 
 //consumes purchase events, validates them (checks for well-formed JSON and required fields), and then forwards valid messages to another topic.
 //validates purchase events and forwards valid ones
+
+//this section is quality control: it listens for purchase events, checks if they are real and correct, and then sends them to the analytics topic if they are valid. 
+//if not, throws them away and logs the error.
