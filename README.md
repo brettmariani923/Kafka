@@ -2,7 +2,7 @@
 
 This project simulates a full Kafka event-driven pipeline using .NET 8. It showcases real-time data streaming with message validation, multi-topic routing, and analytics aggregation.
 📦 Project Structure
-
+```
 KafkaPipeline/
 │
 ├── Common/              # Shared models and constants
@@ -18,7 +18,7 @@ KafkaPipeline/
 │   ├── Validator.cs           # Validates raw messages
 │   ├── PurchaseProcessor.cs  # Validates and forwards to Analytics
 │   └── AnalyticsConsumer.cs  # Consumes valid events and generates analytics
-
+```
 
 🛠 Technologies Used
 
@@ -32,23 +32,7 @@ KafkaPipeline/
 
 ## 🔄 Data Flow Overview
 
-ProducerApp
-
-   |
-   v
-Kafka Topic: purchases
-
-   |
-   v
-PurchaseProcessor (Validator)
-
-   |
-   v
-Kafka Topic: Analytics
-
-   |
-   v
-AnalyticsConsumer
+ProducerApp --> Kafka Topic: purchases --> PurchaseProcessor (Validator) --> Kafka Topic: Analytics --> AnalyticsConsumer
 
 
 
