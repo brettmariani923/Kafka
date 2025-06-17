@@ -1,6 +1,6 @@
 # Event-Driven Kafka Pipeline (C# + Confluent Kafka)
 
-This project demonstrates a complete **Kafka event streaming pipeline** built with `.NET 8`, using **producers**, **validators**, and **analytics consumers** to simulate real-time purchase events and track analytics.
+This project demonstrates a **Kafka event streaming pipeline** built with `.NET 8`, using **producers**, **validators**, and **analytics consumers** to simulate real-time purchase events and track analytics.
 
 It showcases:
 - ✅ Event modeling with `PurchaseEvent`
